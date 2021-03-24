@@ -1,4 +1,4 @@
-package log;
+package ru.eatTheFrog.Robots.log;
 
 public final class Logger
 {

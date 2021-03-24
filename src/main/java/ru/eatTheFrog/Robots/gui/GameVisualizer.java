@@ -1,4 +1,4 @@
-package gui;
+package ru.eatTheFrog.Robots.gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;

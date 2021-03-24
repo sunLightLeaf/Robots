@@ -1,4 +1,4 @@
-package log;
+package ru.eatTheFrog.Robots.log;
 
 import java.util.ArrayList;
 import java.util.Collections;
