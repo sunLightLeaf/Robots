@@ -1,17 +1,13 @@
 package ru.eatTheFrog.Robots.gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-
 import ru.eatTheFrog.Robots.log.LogChangeListener;
 import ru.eatTheFrog.Robots.log.LogEntry;
 import ru.eatTheFrog.Robots.log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+import javax.swing.*;
+import java.awt.*;
+
+public class LogWindow extends RInternalFrame implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
