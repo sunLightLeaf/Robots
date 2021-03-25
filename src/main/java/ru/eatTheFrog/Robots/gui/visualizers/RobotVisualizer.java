@@ -1,6 +1,6 @@
 package ru.eatTheFrog.Robots.gui.visualizers;
 
-import ru.eatTheFrog.Robots.model.Entities.IDrawable;
+import ru.eatTheFrog.Robots.model.Entities.IDrawableRobot;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -11,7 +11,7 @@ import static ru.eatTheFrog.Robots.model.RoboMath.round;
 
 public class RobotVisualizer {
 
-    public static void drawRobot(Graphics2D g, IDrawable robot) {
+    public static void drawRobot(Graphics2D g, IDrawableRobot robot) {
         int robotCenterX = round(robot.getX());
         int robotCenterY = round(robot.getY());
         AffineTransform t = AffineTransform.getRotateInstance(robot.getDirection(), robotCenterX, robotCenterY);

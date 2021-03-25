@@ -15,6 +15,12 @@ public class RobotModule {
         m_maxVelocity = maxVelocity;
         m_maxAngularVelocity = maxAngularVelocity;
     }
+    private double getAngularVelocity(double angleToTarget, Robot robot) {
+        double angularVelocity;
+
+        angularVelocity = compareAngles(robot.getDirection(), angleToTarget) * m_maxAngularVelocity;
+        return angularVelocity;
+    }
 
     public void onModelUpdateEvent(Robot robot, Point targetPosition, double width, double height) {
         double distance = distance(targetPosition.x, targetPosition.y,
@@ -24,13 +30,7 @@ public class RobotModule {
         }
         double velocity = m_maxVelocity;
         double angleToTarget = angleTo(robot.getX(), robot.getY(), targetPosition.x, targetPosition.y);
-        double angularVelocity = 0;
-        if (angleToTarget > robot.getDirection()) {
-            angularVelocity = m_maxAngularVelocity;
-        }
-        if (angleToTarget < robot.getDirection()) {
-            angularVelocity = -m_maxAngularVelocity;
-        }
+        double angularVelocity = getAngularVelocity(angleToTarget, robot);
 
         moveRobot(velocity, angularVelocity, 10, robot, width, height);
     }
@@ -52,9 +52,23 @@ public class RobotModule {
         }
         int h = (int) height;
         int w = (int) width;
-        robot.setX((w == 0) ? newX : newX % width);
-        robot.setY((h == 0) ? newY : newY % height);
+        robot.setX(newX);
+        robot.setY(newY);
+        robotMod(h, w, robot);
         double newDirection = asNormalizedRadians(robot.getDirection() + angularVelocity * duration);
         robot.setDirection(newDirection);
     }
+
+
+        void robotMod(int windowHeight, int windowWidth, Robot robot){
+            if (robot.getX() < 0)
+                robot.setX(windowWidth);
+            if (robot.getX() > windowWidth)
+                robot.setX(0);
+            if (robot.getY() < 0)
+                robot.setY(windowHeight);
+            if (robot.getY() > windowHeight)
+                robot.setY(0);
+
+        }
 }

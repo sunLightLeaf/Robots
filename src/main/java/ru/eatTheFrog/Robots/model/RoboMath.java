@@ -1,7 +1,13 @@
 package ru.eatTheFrog.Robots.model;
 
 public class RoboMath {
-
+    public static double compareAngles(double angleStart, double angleFinish) {
+        double angleDx = angleFinish - angleStart;
+        double c = 1;
+        if (Math.abs(angleDx) > Math.PI)
+            c = -1;
+        return angleDx > 0 ? c : -c;
+    }
     public static double asNormalizedRadians(double angle) {
         while (angle < 0) {
             angle += 2 * Math.PI;

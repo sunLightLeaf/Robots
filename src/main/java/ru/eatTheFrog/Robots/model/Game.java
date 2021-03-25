@@ -1,11 +1,13 @@
 package ru.eatTheFrog.Robots.model;
 
-import ru.eatTheFrog.Robots.model.Entities.IDrawable;
+import ru.eatTheFrog.Robots.log.Logger;
+import ru.eatTheFrog.Robots.model.Entities.IDrawableRobot;
 import ru.eatTheFrog.Robots.model.Entities.Robot;
 import ru.eatTheFrog.Robots.model.modules.RobotModule;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,7 +39,7 @@ public class Game implements IDdrawableIO {
             public void run() {
                 onModel();
             }
-        }, 0, 5);
+        }, 0, 15);
     }
 
     void onModel() {
@@ -45,6 +47,7 @@ public class Game implements IDdrawableIO {
              m_robots) {
             m_robotModule.onModelUpdateEvent(r, m_targetPosition, m_width, m_height);
         }
+        Logger.debug("hegt o");
     }
 
     @Override
@@ -60,11 +63,8 @@ public class Game implements IDdrawableIO {
 
 
     @Override
-    public ArrayList<IDrawable> getRobots() {
-        ArrayList<IDrawable> tobor = new ArrayList<>();
-        for (Robot r: m_robots)
-            tobor.add(r);
-        return tobor;
+    public Iterator<IDrawableRobot> getRobots() {
+        return m_robots.stream().map(Robot::asDrawable).iterator();
     }
 
     @Override

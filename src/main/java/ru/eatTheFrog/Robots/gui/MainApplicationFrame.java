@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
  * 1. Метод создания меню перегружен функционалом и трудно читается.
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  */
-public class MainApplicationFrame extends JFrame {
+public class MainApplicationFrame extends JFrame implements IClosable {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
@@ -80,5 +80,10 @@ public class MainApplicationFrame extends JFrame {
                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
             // just ignore
         }
+    }
+
+    @Override
+    public void onClosed() {
+
     }
 }

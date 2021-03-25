@@ -1,6 +1,6 @@
-package ru.eatTheFrog.Robots.gui;
+package ru.eatTheFrog.Robots.gui.visualizers;
 
-import ru.eatTheFrog.Robots.model.Entities.IDrawable;
+import ru.eatTheFrog.Robots.model.Entities.IDrawableRobot;
 import ru.eatTheFrog.Robots.model.IDdrawableIO;
 
 import javax.swing.*;
@@ -17,7 +17,7 @@ public class GameVisualizer extends JPanel {
     private final Timer m_timer = initTimer();
 
     private IDdrawableIO m_game;
-    private Iterable<IDrawable> robots;
+    private Iterable<IDrawableRobot> robots;
 
     private static Timer initTimer() {
         return new Timer("events generator", true);
@@ -53,15 +53,10 @@ public class GameVisualizer extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        robots = m_game.getRobots();
         m_game.setWidthHeight(this.getWidth(), this.getHeight());
-        if (robots != null) {
-            for (IDrawable robot :
-                    robots) {
-                drawRobot(g2d, robot);
-            }
-            drawTarget(g2d, m_game.getTargetX(), m_game.getTargetY());
-        }
+        m_game.getRobots().forEachRemaining(r -> drawRobot(g2d, r));
+        drawTarget(g2d, m_game.getTargetX(), m_game.getTargetY());
+
     }
 
 }

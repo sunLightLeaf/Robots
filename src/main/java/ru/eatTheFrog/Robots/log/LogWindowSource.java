@@ -1,66 +1,60 @@
 package ru.eatTheFrog.Robots.log;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import ru.eatTheFrog.Robots.ring_buffer.RingBufferQueue;
+import java.util.*;
 
-/**
- * Что починить:
- * 1. Этот класс порождает утечку ресурсов (связанные слушатели оказываются
- * удерживаемыми в памяти)
- * 2. Этот класс хранит активные сообщения лога, но в такой реализации он
- * их лишь накапливает. Надо же, чтобы количество сообщений в логе было ограничено
- * величиной m_iQueueLength (т.е. реально нужна очередь сообщений
- * ограниченного размера)
- */
-public class LogWindowSource {
-    private int m_iQueueLength;
+public class LogWindowSource
+{
+    private final int m_queueCapacity;
 
-    private ArrayList<LogEntry> m_messages;
-    private final ArrayList<LogChangeListener> m_listeners;
+    private final RingBufferQueue<LogEntry> m_messagesQueue;
+    private final Set<LogChangeListener> m_listeners;
 
-    public LogWindowSource(int iQueueLength) {
-        m_iQueueLength = iQueueLength;
-        m_messages = new ArrayList<LogEntry>(iQueueLength);
-        m_listeners = new ArrayList<LogChangeListener>();
+    public LogWindowSource(int iQueueLength)
+    {
+        m_queueCapacity = iQueueLength;
+        m_messagesQueue = new RingBufferQueue<>(m_queueCapacity);
+        m_listeners = Collections.synchronizedSet(new HashSet<>());
     }
 
-    public void registerListener(LogChangeListener listener) {
-        synchronized (m_listeners) {
-            m_listeners.add(listener);
-        }
+    public void registerListener(LogChangeListener listener)
+    {
+        m_listeners.add(listener);
     }
 
-    public void unregisterListener(LogChangeListener listener) {
-        synchronized (m_listeners) {
+    public void unregisterListener(LogChangeListener listener)
+    {
+        if (m_listeners.contains(listener))
             m_listeners.remove(listener);
-        }
     }
 
-    public void append(LogLevel logLevel, String strMessage) {
+    public void append(LogLevel logLevel, String strMessage)
+    {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        synchronized (m_messages) {
-            if (m_messages.size() > m_iQueueLength)
-                m_messages.remove(0);
-            m_messages.add(entry);
+        m_messagesQueue.push(entry);
+        System.out.println(m_listeners.stream().count());
+        synchronized (m_listeners) {
+            m_listeners.forEach(LogChangeListener::onLogChanged);
         }
-        for (LogChangeListener listener : m_listeners) {
-            listener.onLogChanged();
-        }
+
+    }
+    public int getCapacity() {
+        return this.m_queueCapacity;
+    }
+    public int size()
+    {
+        return m_messagesQueue.getSize();
     }
 
-    public int size() {
-        return m_messages.size();
+    public Iterable<LogEntry> range(int startFrom, int count)
+    {
+        return (startFrom < 0 || startFrom >= m_messagesQueue.getSize())
+                ? Collections.emptyList()
+                : m_messagesQueue.getSlice(startFrom, count);
     }
 
-    public Iterable<LogEntry> range(int startFrom, int count) {
-        if (startFrom < 0 || startFrom >= m_messages.size()) {
-            return Collections.emptyList();
-        }
-        int indexTo = Math.min(startFrom + count, m_messages.size());
-        return m_messages.subList(startFrom, indexTo);
-    }
-
-    public Iterable<LogEntry> all() {
-        return m_messages;
+    public Iterable<LogEntry> all()
+    {
+        return range(0, this.size());
     }
 }

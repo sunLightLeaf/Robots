@@ -1,13 +1,14 @@
 package ru.eatTheFrog.Robots.model;
 
-import ru.eatTheFrog.Robots.model.Entities.IDrawable;
+import ru.eatTheFrog.Robots.model.Entities.IDrawableRobot;
 
 import java.awt.*;
+import java.util.Iterator;
 
 public interface IDdrawableIO {
     void setTargetPosition(Point p);
     void setWidthHeight(double width, double height);
-    Iterable<IDrawable> getRobots();
+    Iterator<IDrawableRobot> getRobots();
     int getTargetX();
     int getTargetY();
 }

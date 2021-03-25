@@ -1,11 +1,12 @@
 package ru.eatTheFrog.Robots.gui;
 
+import ru.eatTheFrog.Robots.gui.visualizers.GameVisualizer;
 import ru.eatTheFrog.Robots.model.Game;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class GameWindow extends RInternalFrame {
+public class GameWindow extends RInternalFrame implements IClosable {
     private final GameVisualizer m_visualizer;
 
     public GameWindow() {
@@ -15,5 +16,10 @@ public class GameWindow extends RInternalFrame {
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
+        YesNoDialogCaller.signOnJInternalFrame(this);
+    }
+
+    @Override
+    public void onClosed() {
     }
 }

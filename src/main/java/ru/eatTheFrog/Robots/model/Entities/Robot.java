@@ -1,6 +1,6 @@
 package ru.eatTheFrog.Robots.model.Entities;
 
-public class Robot implements IDrawable {
+public class Robot implements IDrawableRobot {
 
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100;
@@ -21,6 +21,10 @@ public class Robot implements IDrawable {
 
     public void setDirection(double d) {
         m_robotDirection = d;
+    }
+
+    public IDrawableRobot asDrawable(){
+        return (IDrawableRobot) this;
     }
 
 

@@ -7,7 +7,7 @@ import ru.eatTheFrog.Robots.log.LogWindowSource;
 import javax.swing.*;
 import java.awt.*;
 
-public class LogWindow extends RInternalFrame implements LogChangeListener
+public class LogWindow extends RInternalFrame implements LogChangeListener, IClosable
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -25,6 +25,15 @@ public class LogWindow extends RInternalFrame implements LogChangeListener
         getContentPane().add(panel);
         pack();
         updateLogContent();
+
+        YesNoDialogCaller.signOnJInternalFrame(this);
+
+    }
+
+    @Override
+    public void onClosed() {
+        if (this.m_logSource != null)
+            this.m_logSource.unregisterListener(this);
     }
 
     private void updateLogContent()
@@ -42,5 +51,10 @@ public class LogWindow extends RInternalFrame implements LogChangeListener
     public void onLogChanged()
     {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    @Override
+    public boolean isListenerClosed() {
+        return this.isClosed;
     }
 }
