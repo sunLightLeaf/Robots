@@ -32,7 +32,6 @@ public class LogWindowSource
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
         m_messagesQueue.push(entry);
-        System.out.println(m_listeners.stream().count());
         synchronized (m_listeners) {
             m_listeners.forEach(LogChangeListener::onLogChanged);
         }

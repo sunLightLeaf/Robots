@@ -1,6 +1,5 @@
 package ru.eatTheFrog.Robots.model;
 
-import ru.eatTheFrog.Robots.log.Logger;
 import ru.eatTheFrog.Robots.model.Entities.IDrawableRobot;
 import ru.eatTheFrog.Robots.model.Entities.Robot;
 import ru.eatTheFrog.Robots.model.modules.RobotModule;
@@ -47,7 +46,6 @@ public class Game implements IDdrawableIO {
              m_robots) {
             m_robotModule.onModelUpdateEvent(r, m_targetPosition, m_width, m_height);
         }
-        Logger.debug("hegt o");
     }
 
     @Override

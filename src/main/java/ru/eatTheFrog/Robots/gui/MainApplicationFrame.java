@@ -14,10 +14,12 @@ import java.awt.event.KeyEvent;
  * 1. Метод создания меню перегружен функционалом и трудно читается.
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  */
-public class MainApplicationFrame extends JFrame implements IClosable {
+public class MainApplicationFrame extends JFrame implements IDisposable {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
+
     public MainApplicationFrame() {
+        desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 25;
@@ -83,7 +85,8 @@ public class MainApplicationFrame extends JFrame implements IClosable {
     }
 
     @Override
-    public void onClosed() {
-
+    public void dispose() {
+        super.dispose();
+        System.exit(0);
     }
 }

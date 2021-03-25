@@ -7,7 +7,7 @@ import ru.eatTheFrog.Robots.log.LogWindowSource;
 import javax.swing.*;
 import java.awt.*;
 
-public class LogWindow extends RInternalFrame implements LogChangeListener, IClosable
+public class LogWindow extends RInternalFrame implements LogChangeListener, IDisposable
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -31,7 +31,8 @@ public class LogWindow extends RInternalFrame implements LogChangeListener, IClo
     }
 
     @Override
-    public void onClosed() {
+    public void dispose(){
+        super.dispose();
         if (this.m_logSource != null)
             this.m_logSource.unregisterListener(this);
     }
