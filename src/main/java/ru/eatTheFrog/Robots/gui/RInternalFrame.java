@@ -5,11 +5,6 @@ import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
 public class RInternalFrame extends JInternalFrame {
-    RInternalFrame(){
-        super();
-        closing();
-    }
-
     public RInternalFrame(String str, boolean b, boolean b1, boolean b2, boolean b3) {
         super(str, b, b1, b2, b3);
         closing();
@@ -20,7 +15,7 @@ public class RInternalFrame extends JInternalFrame {
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
-                YesNoDialogCaller.internalFrameClosing(e);
+                YesNoDialogCaller.internalFrameClosing(e, RInternalFrame.this);
             }
         });
     }

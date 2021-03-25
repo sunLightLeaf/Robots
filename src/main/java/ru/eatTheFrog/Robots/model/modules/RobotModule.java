@@ -2,6 +2,8 @@ package ru.eatTheFrog.Robots.model.modules;
 
 import ru.eatTheFrog.Robots.model.Entities.Robot;
 
+import java.awt.*;
+
 import static ru.eatTheFrog.Robots.model.RoboMath.*;
 
 public class RobotModule {
@@ -14,14 +16,14 @@ public class RobotModule {
         m_maxAngularVelocity = maxAngularVelocity;
     }
 
-    public void onModelUpdateEvent(Robot robot, int m_targetPositionX, int m_targetPositionY, double width, double height) {
-        double distance = distance(m_targetPositionX, m_targetPositionY,
+    public void onModelUpdateEvent(Robot robot, Point targetPosition, double width, double height) {
+        double distance = distance(targetPosition.x, targetPosition.y,
                 robot.getX(), robot.getY());
         if (distance < 0.5) {
             return;
         }
         double velocity = m_maxVelocity;
-        double angleToTarget = angleTo(robot.getX(), robot.getY(), m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(robot.getX(), robot.getY(), targetPosition.x, targetPosition.y);
         double angularVelocity = 0;
         if (angleToTarget > robot.getDirection()) {
             angularVelocity = m_maxAngularVelocity;

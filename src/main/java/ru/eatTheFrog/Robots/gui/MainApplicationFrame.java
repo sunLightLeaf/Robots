@@ -20,7 +20,7 @@ public class MainApplicationFrame extends JFrame {
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
-        int inset = 50;
+        int inset = 25;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
                 screenSize.width - inset * 2,
@@ -51,7 +51,7 @@ public class MainApplicationFrame extends JFrame {
                             Logger.debug("Новая строка");
                         })),
                         new RMenu("Выход",
-                                new RMenuItem("тут", YesNoDialogCaller::internalFrameClosing)))
+                                new RMenuItem("тут", (event) -> {YesNoDialogCaller.internalFrameClosing(event, this);})))
         );
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }

@@ -10,8 +10,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Game implements IDdrawableIO {
-    private volatile int m_targetPositionX = 150;
-    private volatile int m_targetPositionY = 100;
+    //private volatile int m_targetPositionX = 150;
+    //private volatile int m_targetPositionY = 100;
+
+    private volatile Point m_targetPosition = new Point(150, 100);
 
     private final Timer m_timer = initTimer();
 
@@ -41,14 +43,13 @@ public class Game implements IDdrawableIO {
     void onModel() {
         for (Robot r:
              m_robots) {
-            m_robotModule.onModelUpdateEvent(r, m_targetPositionX, m_targetPositionY, m_width, m_height);
+            m_robotModule.onModelUpdateEvent(r, m_targetPosition, m_width, m_height);
         }
     }
 
     @Override
     public void setTargetPosition(Point p) {
-        m_targetPositionX = p.x;
-        m_targetPositionY = p.y;
+        m_targetPosition = p;
     }
 
     @Override
@@ -68,11 +69,11 @@ public class Game implements IDdrawableIO {
 
     @Override
     public int getTargetX() {
-        return m_targetPositionX;
+        return m_targetPosition.x;
     }
 
     @Override
     public int getTargetY() {
-        return m_targetPositionY;
+        return m_targetPosition.y;
     }
 }
