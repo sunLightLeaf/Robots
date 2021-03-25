@@ -6,7 +6,7 @@ import ru.eatTheFrog.Robots.model.Game;
 import javax.swing.*;
 import java.awt.*;
 
-public class GameWindow extends RInternalFrame implements IDisposable {
+public class GameWindow extends RInternalFrame {
     private final GameVisualizer m_visualizer;
 
     public GameWindow() {
@@ -16,6 +16,5 @@ public class GameWindow extends RInternalFrame implements IDisposable {
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
-        YesNoDialogCaller.signOnJInternalFrame(this);
     }
 }
