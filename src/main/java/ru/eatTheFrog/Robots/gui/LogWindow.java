@@ -1,17 +1,13 @@
 package ru.eatTheFrog.Robots.gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-
 import ru.eatTheFrog.Robots.log.LogChangeListener;
 import ru.eatTheFrog.Robots.log.LogEntry;
 import ru.eatTheFrog.Robots.log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+import javax.swing.*;
+import java.awt.*;
+
+public class LogWindow extends RInternalFrame implements LogChangeListener, IDisposable
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -29,6 +25,16 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         getContentPane().add(panel);
         pack();
         updateLogContent();
+
+        YesNoDialogCaller.signOnJInternalFrame(this);
+
+    }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+        if (this.m_logSource != null)
+            this.m_logSource.unregisterListener(this);
     }
 
     private void updateLogContent()
@@ -46,5 +52,10 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
     public void onLogChanged()
     {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    @Override
+    public boolean isListenerClosed() {
+        return this.isClosed;
     }
 }
