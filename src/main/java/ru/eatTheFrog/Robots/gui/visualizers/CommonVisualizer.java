@@ -1,17 +1,21 @@
 package ru.eatTheFrog.Robots.gui.visualizers;
 
+import ru.eatTheFrog.Robots.model.Entities.Target;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class CommonVisualizer {
 
-    public static void drawTarget(Graphics2D g, int x, int y) {
+    public static void drawFood(Graphics2D g, Target food) {
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+        var xint = (int)food.getX();
+        var yint = (int)food.getY();
         g.setTransform(t);
         g.setColor(Color.GREEN);
-        fillOval(g, x, y, 5, 5);
+        fillOval(g, xint, yint, 5, 5);
         g.setColor(Color.BLACK);
-        drawOval(g, x, y, 5, 5);
+        drawOval(g, xint, yint, 5, 5);
     }
 
 

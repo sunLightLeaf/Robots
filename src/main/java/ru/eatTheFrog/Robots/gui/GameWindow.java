@@ -17,5 +17,6 @@ public class GameWindow extends RInternalFrame implements IDisposable {
         getContentPane().add(panel);
         pack();
         YesNoDialogCaller.signOnJInternalFrame(this);
+        m_visualizer.startTimers();
     }
 }
