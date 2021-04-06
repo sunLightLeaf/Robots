@@ -28,7 +28,7 @@ public class RobotsManager extends AbstractOnModelUpdatingCore {
     public Game game;
     private FoodManager foodManager;
     private List<IRobot> robots;
-    private List<IRobot> robotsToCreate = Collections.synchronizedList(new ArrayList<>());
+    private final List<IRobot> robotsToCreate = Collections.synchronizedList(new ArrayList<>());
 
     public RobotsManager(Game game, FoodManager foodManager) {
         this.game = game;
@@ -39,18 +39,22 @@ public class RobotsManager extends AbstractOnModelUpdatingCore {
         robots.add(RobotBuilder.buildFromScheme(this.game, robotScheme));
     }
     public boolean reproduceRequest(IReproduceRobot robot) {
-        if (robots.size() >= RobotsConfig.MAX_ROBOTS_IN_GAME)
-            return false;
-        var schemeNew = robot.getScheme().copy().mutate();
+        // Вот тут неочевидный баг был. Если убрать синхронизацию, то боты
+        // размножаются одновременно и это выглядит мега-тупо.
+        synchronized (robotsToCreate) {
+            if (robots.size() + robotsToCreate.size() >= RobotsConfig.MAX_ROBOTS_IN_GAME)
+                return false;
+            var schemeNew = robot.getScheme().copy().mutate();
 
-        var newRobot = RobotBuilder.buildFromScheme(this.game, schemeNew);
-        var energyPercent = robot.getEnergyPercently();
-        newRobot.setEnergyPercently(energyPercent/2);
-        newRobot.setX(robot.getX());
-        newRobot.setY(robot.getY());
-        robot.setEnergyPercently(energyPercent/2);
-        this.robotsToCreate.add(newRobot);
-        return true;
+            var newRobot = RobotBuilder.buildFromScheme(this.game, schemeNew);
+            var energyPercent = robot.getEnergyPercently();
+            newRobot.setEnergyPercently(energyPercent/2);
+            newRobot.setX(robot.getX());
+            newRobot.setY(robot.getY());
+            robot.setEnergyPercently(energyPercent/2);
+            this.robotsToCreate.add(newRobot);
+            return true;
+        }
     }
     @REFLECTION_OnModelExecutor.OnModelAction
     public void placeRobotsFromQueue() {

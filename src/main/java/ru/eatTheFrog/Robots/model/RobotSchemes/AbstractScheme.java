@@ -20,7 +20,7 @@ import java.util.Random;
 public abstract class AbstractScheme {
     // ПОЛЯ ТИПА DOUBLE В РОБОТЕ ДОЛЖНЫ БЫТЬ НАЗВАНЫ ТАК ЖЕ КАК В SCHEME ПО КОТОРОЙ ОН СОЗДАЁТСЯ
     // ИБО ОНИ АВТОМАТИЧЕСКИ КОПИРУЮТСЯ ПРИ СОЗДАНИИ НОВОГО РОБОТА ПО ИМЕНАМ!
-    public static double defaultMediocrityRate = 1000;
+    public static double defaultMediocrityRate = 300;
 
     public double x;
     public double y;

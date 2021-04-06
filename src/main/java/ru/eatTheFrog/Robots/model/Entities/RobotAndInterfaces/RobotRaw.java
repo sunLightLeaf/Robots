@@ -8,6 +8,7 @@ import ru.eatTheFrog.Robots.model.GameAndArbitration.GameManagers.IClock;
 import ru.eatTheFrog.Robots.model.Tasks.LiveTask;
 import ru.eatTheFrog.Robots.model.static_modules.IReadonlyVector2D;
 import ru.eatTheFrog.Robots.model.static_modules.MutableVector2D;
+import ru.eatTheFrog.Robots.model.static_modules.SafetyColorBuilder;
 
 import java.awt.*;
 import java.util.Optional;
@@ -243,7 +244,7 @@ public class RobotRaw extends PhysicalBody implements IRobot, IWanderizeRobot, I
     }
     @Override
     public Color getColor() {
-        return new Color((int)this.redColor, (int)this.greenColor, (int)this.blueColor);
+        return SafetyColorBuilder.buildColorFromRGB(this.redColor, this.greenColor, this.blueColor);
     }
 
     public void addFoodSensor(RobotFoodsSensor foodSensor) {
