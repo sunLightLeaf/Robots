@@ -1,63 +1,100 @@
 package ru.eatTheFrog.Robots.model;
 
-import ru.eatTheFrog.Robots.model.Entities.EdibleType;
-import ru.eatTheFrog.Robots.model.Entities.IRobot;
-import ru.eatTheFrog.Robots.model.Entities.RobotsClasses.Organs.RobotMouth;
-import ru.eatTheFrog.Robots.model.Entities.RobotRaw;
-import ru.eatTheFrog.Robots.model.Entities.RobotsClasses.RobotFoodSensor;
-import ru.eatTheFrog.Robots.model.RobotSchemes.IRobotScheme;
-import ru.eatTheFrog.Robots.model.RobotSchemes.RobotScheme;
+import ru.eatTheFrog.Robots.model.Entities.Food.FoodType;
+import ru.eatTheFrog.Robots.model.RobotsModules.*;
+import ru.eatTheFrog.Robots.model.Entities.RobotAndInterfaces.IRobot;
+import ru.eatTheFrog.Robots.model.Entities.RobotAndInterfaces.RobotRaw;
+import ru.eatTheFrog.Robots.model.GameAndArbitration.Game;
+import ru.eatTheFrog.Robots.model.RobotSchemes.AbstractScheme;
+import ru.eatTheFrog.Robots.model.Tasks.LiveTask;
 
-import java.awt.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class RobotBuilder {
-    static IRobot buildFromScheme(Game game, IRobotScheme scheme) {
+    public static IRobot buildFromScheme(Game game, AbstractScheme scheme) {
         var robot = new RobotRaw();
-        robot.setX(scheme.getX());
-        robot.setY(scheme.getY());
-        robot.setVelocity(scheme.getVelocity());
-        robot.color = scheme.getColor();
-        robot.preferedEdibleType = scheme.getPreferedEdibleType();
-        robot.itsEdibleType = scheme.getItsEdibleType();
-        robot.addFoodSensor(new RobotFoodSensor(
+        robot.task = new LiveTask(robot);
+        REFLECTION_copyDoublesFromSchemeToRobot(robot, scheme);
+        robot.setX(scheme.x);
+        robot.setY(scheme.y);
+        robot.schemeCreatedFrom = scheme;
+        robot.addGameManupulator(new RobotGameManipulator(game, robot));
+        robot.setVelocity(scheme.maxVelocity);
+        robot.clock = game.getClocks();
+        robot.robotReproducer = new RobotReproducer(game.robotsManager, robot);
+        addEnemyEstimator(robot, scheme);
+        robot.addFoodSensor(new RobotFoodsSensor(
                 robot,
-                game,
-                robot.preferedEdibleType));
-        addMouth(robot, robot.preferedEdibleType);
-        addGameManipulator(robot, game);
+                game.foodManager, scheme.edibleType));
+        robot.addDangerSensor(new RobotEnemySensor(
+                robot,
+                game.robotsManager));
+        addMouth(robot, scheme.edibleType);
+
+//        robot.inclinationToVegetarianism = scheme.inclinationToVegetarianism;
+//        robot.acceleration = scheme.acceleration;
+//        robot.attack = scheme.attack;
+//        robot.slipping = scheme.slipping;
+//        robot.type = scheme.type;
+//        robot.wanderizeIrregularityRate = scheme.wanderizeIrregularityRate;
+//        robot.thickness = scheme.thickness;
+//        robot.length = scheme.length;
+
+        robot.initAfterBuilding();
         return robot;
+
     }
-    static IRobot buildVeggie(Game game, RobotScheme scheme) {
-        var veggie = new RobotRaw();
-        veggie.setX(scheme.x);
-        veggie.setY(scheme.y);
-        veggie.setVelocity(0.1);
-        veggie.color = Color.green;
-        veggie.preferedEdibleType = EdibleType.FOOD;
-        veggie.itsEdibleType = EdibleType.VEGGIE;
-        veggie.addFoodSensor(new RobotFoodSensor(veggie,game,EdibleType.FOOD));
-        addMouth(veggie, EdibleType.FOOD);
-        addGameManipulator(veggie, game);
-        return veggie;
+    static private void addEnemyEstimator(RobotRaw robot, AbstractScheme scheme) {
+        var estimator = new RobotEnemyEstimator(robot);
+        estimator.solutionKMaxToAttack = scheme.solutionKMaxToAttack;
+        estimator.solutionKsuperiority = scheme.solutionKsuperiority;
+        estimator.solutionKvolumeEstimator = scheme.solutionKvolumeEstimator;
+        robot.robotEnemyEstimator = estimator;
     }
-    static IRobot buildHunty(Game game, RobotScheme scheme) {
-        var hunty = new RobotRaw();
-        hunty.setX(scheme.x);
-        hunty.setY(scheme.y);
-        hunty.color = Color.red;
-        hunty.preferedEdibleType = EdibleType.VEGGIE;
-        hunty.itsEdibleType = EdibleType.HUNTY;
-        hunty.addFoodSensor(new RobotFoodSensor(hunty, game, EdibleType.VEGGIE));
-        hunty.setVelocity(0.2);
-        addMouth(hunty, EdibleType.VEGGIE);
-        addGameManipulator(hunty, game);
-        return hunty;
+    static private void addMouth(RobotRaw robotRaw, FoodType edibleType) {
+        robotRaw.robotMouth = new RobotMouth(robotRaw, edibleType);
     }
-    static private void addMouth(RobotRaw robotRaw, EdibleType edibleType) {
-        robotRaw.robotMouth = Optional.of(new RobotMouth(robotRaw, edibleType));
+    static void REFLECTION_copyDoublesFromSchemeToRobot(RobotRaw robotRaw, AbstractScheme scheme) {
+        Arrays.stream(scheme.getClass().getFields())
+                .filter(x -> x.getType().equals(double.class))
+                .forEach(field -> {
+                    var optionalField = getFieldOptional(robotRaw, field.getName());
+                    optionalField.ifPresent(
+                            realField -> {
+                                if (realField.getType().equals(double.class)) {
+                                    try {
+                                        realField.set(robotRaw, field.get(scheme));
+                                    } catch (IllegalAccessException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                    );
+                });
     }
-    static private void addGameManipulator(RobotRaw robotRaw, Game game) {
-        robotRaw.robotGameManipulator = game.robotGameManipulator;
+    static Optional<Field> getFieldOptional(Object object, String fieldName) {
+        try {
+            var field = object.getClass().getField(fieldName);
+            return Optional.of(field);
+        } catch (NoSuchFieldException e) {
+            return Optional.empty();
+        }
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

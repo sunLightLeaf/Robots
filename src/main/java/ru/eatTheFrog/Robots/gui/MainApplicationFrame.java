@@ -53,7 +53,14 @@ public class MainApplicationFrame extends JFrame implements IDisposable {
                             Logger.debug("Новая строка");
                         })),
                         new RMenu("Выход",
-                                new RMenuItem("тут", (event) -> {YesNoDialogCaller.internalFrameClosing(event, this);})))
+                                new RMenuItem("тут", (event) -> {YesNoDialogCaller.internalFrameClosing(event, this);})),
+                        new RMenu("Скорость игры",
+                                new RMenuItem("1x", (event) -> {gameWindow.setGameSpeed(1);}),
+                                new RMenuItem("2x", (event) -> {gameWindow.setGameSpeed(2);}),
+                                new RMenuItem("5x", (event) -> {gameWindow.setGameSpeed(5);}),
+                                new RMenuItem("20x", (event) -> {gameWindow.setGameSpeed(20);}),
+                                new RMenuItem("100x", (event) -> {gameWindow.setGameSpeed(100);})
+                                ))
         );
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }

@@ -1,41 +1,26 @@
 package ru.eatTheFrog.Robots.model.RobotSchemes;
 
-import ru.eatTheFrog.Robots.model.Entities.EdibleType;
+import ru.eatTheFrog.Robots.model.Entities.EntityType;
+import ru.eatTheFrog.Robots.model.Entities.Food.FoodType;
 
-import java.awt.*;
-
-public class VeggieScheme extends RobotScheme implements IRobotScheme {
+public class VeggieScheme extends AbstractScheme {
     public VeggieScheme(double x, double y) {
-        super(x, y);
-    }
-
-    @Override
-    public double getVelocity() {
-        return 0.1;
-    }
-
-    @Override
-    public double getX() {
-        return this.x;
-    }
-
-    @Override
-    public double getY() {
-        return this.y;
-    }
-
-    @Override
-    public Color getColor() {
-        return Color.green;
-    }
-
-    @Override
-    public EdibleType getPreferedEdibleType() {
-        return EdibleType.FOOD;
-    }
-
-    @Override
-    public EdibleType getItsEdibleType() {
-        return EdibleType.VEGGIE;
+        this.x = x;
+        this.y = y;
+        this.maxVelocity = 1;
+        this.acceleration = 0.01;
+        this.angularAcceleration = 0.002;
+        this.slipping = 10;
+        thickness = 15;
+        length = 45;
+        solutionKsuperiority = 1;
+        solutionKvolumeEstimator = 1;
+        solutionKMaxToAttack = 2;
+        inclinationToVegetarianism = 1;
+        this.edibleType = FoodType.GRASS;
+        this.type = EntityType.VEGGIE;
+        attack = 0;
+        this.dangerType = EntityType.HUNTY;
+        this.wanderizeIrregularityRate = 100;
     }
 }
