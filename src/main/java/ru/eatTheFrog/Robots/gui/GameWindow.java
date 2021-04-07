@@ -1,7 +1,7 @@
 package ru.eatTheFrog.Robots.gui;
 
 import ru.eatTheFrog.Robots.gui.visualizers.GameVisualizer;
-import ru.eatTheFrog.Robots.model.Game;
+import ru.eatTheFrog.Robots.model.GameAndArbitration.Game;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,5 +17,9 @@ public class GameWindow extends RInternalFrame implements IDisposable {
         getContentPane().add(panel);
         pack();
         YesNoDialogCaller.signOnJInternalFrame(this);
+        m_visualizer.startTimers();
+    }
+    public void setGameSpeed(int gameSpeed){
+        this.m_visualizer.setGameSpeed(gameSpeed);
     }
 }
